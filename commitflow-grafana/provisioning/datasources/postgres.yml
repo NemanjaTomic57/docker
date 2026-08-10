@@ -1,0 +1,13 @@
+---
+apiVersion: 1
+
+datasources:
+  - name: Postgres
+    type: postgres
+    url: $__env{DB_HOST}:5432
+    user: $__env{DB_USER}
+    secureJsonData:
+      password: $__env{DB_PASSWORD}
+    jsonData:
+      database: $__env{DB_DATABASE}
+      sslmode: 'require'
