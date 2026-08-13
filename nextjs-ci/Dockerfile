@@ -3,6 +3,7 @@ FROM node:24-bookworm
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
   bash ca-certificates unzip curl python3 yamllint \
+  gcc pkg-config libc6-dev libssl-dev \
   chromium \
   libasound2 \
   libatk-bridge2.0-0 \
@@ -45,13 +46,16 @@ RUN npm install --global corepack@latest \
   corepack enable pnpm \
   corepack use pnpm@latest-11
 
-RUN curl -fsSL https://awscli.amazonaws.com/v2/install.sh | bash -s -- --system
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+  | sh -s -- -y \
+  && /root/.cargo/bin/cargo install lychee --version 0.24.2 \
+  && ln -s /root/.cargo/bin/lychee /usr/local/bin
 
-RUN curl https://htmltest.wjdp.uk | bash -s -- -b /usr/local/bin
+RUN curl -fsSL https://awscli.amazonaws.com/v2/install.sh | bash -s -- --system
 
 RUN pnpm --version \
     && node --version \
     && aws --version \
     && yamllint --version \
-    # && htmltest --version \
+    && lychee --version \
     && python3 --version
